@@ -25,6 +25,7 @@ namespace pocketmine\command\defaults;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\Player;
 use pocketmine\world\weather\WeatherType;
 use function count;
@@ -35,7 +36,7 @@ class WeatherCommand extends Command {
 
 	public function __construct() {
 		parent::__construct("weather", "Change the weather in the current world", "/weather <clear|rain|thunder>", ["setweather"]);
-		$this->setPermission("pocketmine.command.weather");
+		$this->setPermission(DefaultPermissionNames::COMMAND_WEATHER);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args) : bool {

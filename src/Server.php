@@ -89,6 +89,7 @@ use pocketmine\promise\Promise;
 use pocketmine\promise\PromiseResolver;
 use pocketmine\resourcepacks\ResourcePackManager;
 use pocketmine\scheduler\AsyncPool;
+use pocketmine\scheduler\Scheduler;
 use pocketmine\snooze\SleeperHandler;
 use pocketmine\stats\SendUsageTask;
 use pocketmine\thread\log\AttachableThreadSafeLogger;
@@ -785,6 +786,8 @@ class Server{
 			$this->shutdown();
 		});
 
+    $this->scheduler = new Scheduler($this);
+
 		try{
 			foreach([
 				$dataPath,
@@ -809,12 +812,11 @@ class Server{
 				}
 				@file_put_contents($pocketmineYmlPath, $content);
 			}
-
-			$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void {
-	foreach ($this->getWorldManager()->getWorlds() as $world) {
-		$world->update();
-	}
-}), 20 * 60);
+      $this->scheduler->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void {
+          foreach ($this->getWorldManager()->getWorlds() as $world) {
+            $world->update();
+	        }
+      }), 20 * 60);
 			$this->configGroup = new ServerConfigGroup(
 				new Config($pocketmineYmlPath, Config::YAML, []),
 				new Config(Path::join($this->dataPath, "server.properties"), Config::PROPERTIES, [

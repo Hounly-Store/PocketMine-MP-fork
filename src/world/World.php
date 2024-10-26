@@ -104,6 +104,7 @@ use pocketmine\world\particle\Particle;
 use pocketmine\world\sound\BlockPlaceSound;
 use pocketmine\world\sound\Sound;
 use pocketmine\world\utils\SubChunkExplorer;
+use pocketmine\world\weather\WeatherManager;
 use pocketmine\YmlServerProperties;
 use function abs;
 use function array_filter;
@@ -491,6 +492,7 @@ class World implements ChunkManager{
 			throw new AssumptionFailedError("WorldManager should already have checked that the generator exists");
 		$generator->validateGeneratorOptions($this->provider->getWorldData()->getGeneratorOptions());
 		$this->generator = $generator->getGeneratorClass();
+		$this->weatherManager = new WeatherManager($this);
 		$this->chunkPopulationRequestQueue = new \SplQueue();
 		$this->addOnUnloadCallback(function() : void{
 			$this->logger->debug("Cancelling unfulfilled generation requests");
@@ -3513,5 +3515,13 @@ class World implements ChunkManager{
 				}
 			}
 		}
+	}
+
+	public function getWeatherManager() : WeatherManager{
+	  return $this->WeatherManager;
+	}
+
+	public function update() : void{
+	  $this->weatherManager->updateWeather();
 	}
 }
